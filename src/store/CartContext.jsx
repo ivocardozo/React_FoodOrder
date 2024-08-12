@@ -6,15 +6,30 @@ const CartContext = createContext({
 });
 
 const cartReducer = (state, action) => {
-    // ...
-    return {}
+    if (action.type === 'ADD_ITEM') {
+        const existingCartItemIndex = state.items.findIndex(item => 
+            item === action.item.id
+        );
+
+        const updatedItems = [...state.items];
+
+        if (existingCartItemIndex > -1) {
+            const updatedItem = {
+                ...state.items[existingCartItemIndex],
+                quantity: state.items[existingCartItemIndex].quantity + 1
+            }
+        } else {
+            updatedItems.push({...action.item, quantity: 1});
+        }
+        return { ...state, items: updatedItems};
+    }
 }
 
 export const CartContextProvider = ({children}) => {
     const [cart, dispatchCartAction] = useReducer(cartReducer, {items:[]});
 
     const addItem = (item) => {
-        // ...
+        dispatchCartAction({type: 'ADD_ITEM', item});
     }
 
     const cartContext = {
